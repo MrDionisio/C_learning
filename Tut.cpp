@@ -3,17 +3,17 @@
 
 using namespace std;
 
-bool Result(string *entities, int a, int b, int N) {
+bool Result(int u_i, int c_i, int num) {
     bool res=0; 
-    for (int i = 1; i <= N / 2; i++) {
-        res = (((entities[(a + i) % N]) == entities[b]) || res);
+    for (int i = 1; i <= num / 2; i++) {
+        res = (((u_i + i) % num == c_i) || res);
     }
     return res;
 }
 
 void chooseEntitie(string *entites, int N) {
     setlocale(LC_ALL, "ru");
-    cout << "Выберите то, что хотите поставить:" << endl; 
+    cout << "Choose your entitie:" << endl; 
     for (int i = 0; i < N; i++)
     {
         cout << (i + 1) << " - " << entites[i] << "\t";
@@ -26,37 +26,38 @@ void chooseEntitie(string *entites, int N) {
 
 int main() {
     setlocale(LC_ALL, "ru");
+
     int N;
-    cout << "Введите количество ваших персонажей" << endl;
+    cout << "Input numbers of entities" << endl;
     cin >> N;
 
     string* entities = new string[N];
-    cout << "Введите ваших персонажей в таком порядке, что 1 бьет 2, 2 бьет 3 и т.д. (до последний бьет 1)" << endl;
+    cout << "Enter your characters in such an order that 1 beats 2, 2 beats 3, etc. (until the last one beats 1)" << endl;
     for (int i = 0; i < N; i++)
     {
         cin >> entities[i];
     }
-    int a, b, w = 0 , l = 0;
+    int user_entitie_index, comp_entitie_index, w = 0 , l = 0;
 
     string exit = " ";
 
     do {
         chooseEntitie(entities, N);
-        cin >> a;
-        a = a - 1;
-        b = (rand() % N);
+        cin >> user_entitie_index;
+        user_entitie_index = user_entitie_index - 1;
+        comp_entitie_index = (rand() % N);
 
 
-        cout << "Ты выбрал - " << entities[a] << endl;
-        cout << "Компьюетр выбрал - " << entities[b] << endl;
+        cout << "You choose - " << entities[user_entitie_index] << endl;
+        cout << "Comp choose - " << entities[comp_entitie_index] << endl;
 
-        if (a == b) { cout << "Ничья!" << endl; }
-        else if (Result(entities, a, b, N)){ cout << "Ты выиграл, тип!" << endl; w++; }
-        else { cout << "Лузер, продул! Ха-ха-ха! >:)" << endl; l++;}
+        if (user_entitie_index == comp_entitie_index) { cout << "Noone win!" << endl; }
+        else if (Result(user_entitie_index, comp_entitie_index, N)){ cout << "You won!" << endl; w++; }
+        else { cout << "Looser! You lose! >:)" << endl; l++;}
 
 
-        cout << "Статистика: Wins: " << w << "; Loses: " << l << endl;
-        cout << "Хош ещё? Нажми y (игрик) - типо да или n (эн) - типо нет." << endl;
+        cout << "Statistics: Wins: " << w << "; Loses: " << l << endl;
+        cout << "Go again? Input y - yes or n - no." << endl;
         cin >> exit;
 
     } while (exit == "y");

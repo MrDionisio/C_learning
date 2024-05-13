@@ -4,9 +4,9 @@
 using namespace std;
 
 bool Result(int u_i, int c_i, int num) {
-    bool res=0; 
+    bool res=false; 
     for (int i = 1; i <= num / 2; i++) {
-        res = (((u_i + i) % num == c_i) || res);
+        if ((u_i + i) % num == c_i){ res = true; }
     }
     return res;
 }
@@ -37,11 +37,11 @@ int main() {
     {
         cin >> entities[i];
     }
+
     int user_entitie_index, comp_entitie_index, w = 0 , l = 0;
+    char exit;
 
-    string exit = " ";
-
-    do {
+    while(true){
         chooseEntitie(entities, N);
         cin >> user_entitie_index;
         user_entitie_index = user_entitie_index - 1;
@@ -58,9 +58,11 @@ int main() {
 
         cout << "Statistics: Wins: " << w << "; Loses: " << l << endl;
         cout << "Go again? Input y - yes or n - no." << endl;
-        cin >> exit;
 
-    } while (exit == "y");
+        cin >> exit;
+        if (exit == 'y') { break; }
+
+    }
  
     return 0;
 }

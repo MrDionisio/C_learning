@@ -1,68 +1,99 @@
 #include <iostream>
-
-
+#include <vector>
 using namespace std;
 
-bool Result(int u_i, int c_i, int num) {
-    bool res=false; 
-    for (int i = 1; i <= num / 2; i++) {
-        if ((u_i + i) % num == c_i){ res = true; }
-    }
-    return res;
-}
+template<typename T>
 
-void chooseEntitie(string *entites, int N) {
-    setlocale(LC_ALL, "ru");
-    cout << "Choose your entitie:" << endl; 
-    for (int i = 0; i < N; i++)
-    {
-        cout << (i + 1) << " - " << entites[i] << "\t";
-    }
-    cout << endl;
-}
+class Matrix{
+public:
 
-
-
-
-int main() {
-    setlocale(LC_ALL, "ru");
-
-    int N;
-    cout << "Input numbers of entities" << endl;
-    cin >> N;
-
-    string* entities = new string[N];
-    cout << "Enter your characters in such an order that 1 beats 2, 2 beats 3, etc. (until the last one beats 1)" << endl;
-    for (int i = 0; i < N; i++)
-    {
-        cin >> entities[i];
+    Matrix(size_t numberOfRows = 0, size_t numberOfColumns = 0): nRow(numberOfRows), nColumn(numberOfColumns), mtrx(nRow, vector<T>(nColumn, 0)) {
     }
 
-    int user_entitie_index, comp_entitie_index, w = 0 , l = 0;
-    char exit;
-
-    while(true){
-        chooseEntitie(entities, N);
-        cin >> user_entitie_index;
-        user_entitie_index = user_entitie_index - 1;
-        comp_entitie_index = (rand() % N);
+    size_t getRows() { return nRow; }
+    size_t getColumns() { return nColumn; }
 
 
-        cout << "You choose - " << entities[user_entitie_index] << endl;
-        cout << "Comp choose - " << entities[comp_entitie_index] << endl;
-
-        if (user_entitie_index == comp_entitie_index) { cout << "Noone win!" << endl; }
-        else if (Result(user_entitie_index, comp_entitie_index, N)){ cout << "You won!" << endl; w++; }
-        else { cout << "Looser! You lose! >:)" << endl; l++;}
-
-
-        cout << "Statistics: Wins: " << w << "; Loses: " << l << endl;
-        cout << "Go again? Input y - yes or n - no." << endl;
-
-        cin >> exit;
-        if (exit == 'y') { break; }
-
+    void getMatrix() {
+        for (auto& element1 : mtrx) {
+            for (auto& element2 : element1) {
+                cout << element2 << '\t';
+            }
+            cout << endl;
+        }
     }
- 
-    return 0;
+
+    void Randomize() {
+        for (auto& row : mtrx) {
+            for (auto& col : row) {
+                col = rand() % 10;
+            }
+        }
+    }
+
+    T&  operator() (size_t i, size_t j){
+        return mtrx.at(i).at(j);
+    }
+
+    Matrix<T> operator*(const Matrix<T>& B) {
+        Matrix<T> tmp{this->nRow, B.nColumn};
+
+        for (size_t i = 0; i < tmp.nRow; i++) {
+            for (size_t j = 0; j < tmp.nColumn; j++) {
+                tmp(i, j) = 0;
+                for(size_t k = 0; k < this->nColumn; k++ ){
+                    tmp(i, j) += this->operator()(i, k) * B.mtrx.at(k).at(j);
+                }
+            }
+        }
+        return tmp;
+    }
+    
+    Matrix<T> operator+(const Matrix<T>& B) {
+        Matrix<T> tmp(this->nRow, this->nColumn);
+
+        for (size_t i = 0; i < tmp.nRow; i++) {
+            for (size_t j = 0; j < tmp.nColumn; j++) {
+                tmp(i, j) = this->operator()(i,j)+B.mtrx.at(i).at(j);
+            }
+        }
+        return tmp;
+    }
+
+
+private:
+
+    size_t nRow, nColumn;
+    vector<vector<T>> mtrx;
+
+};
+
+
+
+
+int main()
+{
+    Matrix<int> a(3, 4);
+    Matrix<int> b(4, 1);
+
+    a.Randomize();
+    b.Randomize();
+
+    Matrix<int> c;
+
+    c = a*b;
+
+
+
+    cout << "----------------------------------------" << endl;
+    a.getMatrix();
+    cout << "----------------------------------------" << endl;
+    b.getMatrix();
+    cout << "----------------------------------------" << endl;
+    c.getMatrix();
+    cout << "----------------------------------------" << endl;
+    
+
+
+
 }
